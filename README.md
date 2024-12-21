@@ -1,4 +1,5 @@
 ## Treasury Auctions Bid-To-Cover
 
-<img width="1419" alt="Screenshot 2024-12-21 at 00 53 43" src="https://github.com/user-attachments/assets/1defa27e-ca77-48fb-afcf-f0b6e46ba129" />
+<img width="1421" alt="Screenshot 2024-12-21 at 01 00 45" src="https://github.com/user-attachments/assets/056bdf5a-8b53-4ada-9c32-624c5e79907c" />
+
 
