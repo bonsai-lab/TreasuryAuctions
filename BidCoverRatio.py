@@ -35,6 +35,79 @@ else:
     print(response.text)  # Print the error message
 
 
+
+
+# Force reset index to ensure no conflicts
+df = df.reset_index(drop=True)
+
+# Convert columns to appropriate types
+df['auction_date'] = pd.to_datetime(df['auction_date'])
+df['bid_to_cover_ratio'] = pd.to_numeric(df['bid_to_cover_ratio'], errors='coerce')
+
+# Get unique security terms
+security_terms = df['security_term'].unique()
+
+
+fig = go.Figure()
+
+# Add a trace for each security_term 
+for i, term in enumerate(security_terms):
+    filtered_df = df[df['security_term'] == term].dropna(subset=['bid_to_cover_ratio'])
+    filtered_df = filtered_df.sort_values(by='auction_date')  # Use 'by' explicitly
+    
+    
+    fig.add_trace(
+        go.Scatter(
+            x=filtered_df['auction_date'],
+            y=filtered_df['bid_to_cover_ratio'],
+            mode='lines+markers',
+            name=f"{term} (Bid-to-Cover Ratio)",
+            line=dict(color='white'),
+            visible=(i == 0)
+        )
+    )
+    # Add moving average trace
+    filtered_df['moving_avg'] = filtered_df['bid_to_cover_ratio'].rolling(window=10).mean()
+    fig.add_trace(
+        go.Scatter(
+            x=filtered_df['auction_date'],
+            y=filtered_df['moving_avg'],
+            mode='lines',
+            name=f"{term} (Moving Avg)",
+            line=dict(dash='dot'),
+            visible=(i == 0)  
+        )
+    )
+
+# Create dropdown menu
+dropdown_buttons = []
+for i, term in enumerate(security_terms):
+    visibility = [False] * len(fig.data)
+    visibility[i * 2] = True      
+    visibility[i * 2 + 1] = True   
+    dropdown_buttons.append(
+        dict(
+            label=term,
+            method="update",
+            args=[{"visible": visibility},
+                  {"title": f"Bid-to-Cover Ratio and Moving Average for {term}"}]
+        )
+    )
+
+
+fig.update_layout(
+    updatemenus=[dict(active=0, buttons=dropdown_buttons)],
+    title=f"Bid-to-Cover Ratio and Moving Average for {security_terms[0]}",
+    xaxis_title="Auction Date",
+    yaxis_title="Bid-to-Cover Ratio",
+    template="plotly_dark",
+    font_family="Bloomberg",
+)
+
+# Show the figure
+fig.show()
+
+
 df.index = df['auction_date']
 df['auction_date'] = pd.to_datetime(df['auction_date'])
 df['maturity_date'] = pd.to_datetime(df['maturity_date'])
@@ -46,31 +119,16 @@ df['auction_week'] = df['auction_date'].dt.to_period('W')
 # Sort by maturity_date to get the correct order for the bar plot
 df = df.sort_values(by='maturity_date')
 
-# Get the unique weeks
-weeks = df['auction_week'].unique()
+
+print(df)
 
 
 # Remove rows where 'bid_to_cover_ratio' is NaN
 df = df.dropna(subset=['bid_to_cover_ratio'])
-df['auction_date'] = pd.to_datetime(df['auction_date'])
-df['maturity_date'] = pd.to_datetime(df['maturity_date'])
-df['bid_to_cover_ratio'] = pd.to_numeric(df['bid_to_cover_ratio'], errors='coerce')
-
-# Create a new column for the week of the auction date (using the start of the week)
-df['auction_week'] = df['auction_date'].dt.to_period('W')
 
 # Sort by maturity_date to get the correct order for the line plot
 df = df.sort_values(by='maturity_date')
 
-# Get the unique weeks
-weeks = df['auction_week'].unique()
-
-
-# Select only the last 12 weeks
-weeks = weeks[-12:]
-
-# Convert periods to timestamps (start of the week)
-week_start_dates = [week.start_time for week in weeks]
 
 # Enhanced function to convert security_term to numerical values (in years)
 def convert_security_term(term):
@@ -98,7 +156,7 @@ df = df.sort_values(by='security_term_numeric', ascending=True)
 df['auction_date'] = pd.to_datetime(df['auction_date'])
 
 
-start_date = "2022-01-01"
+start_date = "2000-01-01"
 end_date = "2024-12-31"  
 
 # Filter the DataFrame by auction date
@@ -117,6 +175,7 @@ fig = px.box(
     y="bid_to_cover_ratio",
     title=f"Bid-to-Cover Ratios by Security Term ({start_date} to {end_date})",
     labels={"security_term": "Security Term", "bid_to_cover_ratio": "Bid-to-Cover Ratio"},
+    color_discrete_sequence=["white"], 
 )
 
 # Add scatter points for the last auction in red
