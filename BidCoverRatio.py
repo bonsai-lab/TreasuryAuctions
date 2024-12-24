@@ -155,9 +155,8 @@ df.dropna(subset=['auction_date', 'bid_to_cover_ratio', 'security_term'], inplac
 # Convert 'security_term' to years for ordering
 df['security_term_years'] = df['security_term'].apply(convert_security_term)
 
-# Define a date range (you can customize this range or input dynamically)
-start_date = "2022-01-01"  # Example start date
-end_date = "2024-12-31"    # Example end date
+start_date = "2022-01-01"
+end_date = "2024-12-31"
 
 # Filter the DataFrame by auction date
 filtered_df = df[(df['auction_date'] >= start_date) & (df['auction_date'] <= end_date)]
@@ -192,7 +191,7 @@ for date, opacity in zip(last_5_auction_dates, opacity_levels):
         )
     )
 
-# Customize layout
+
 fig.update_layout(
     xaxis_title="Security Term",
     yaxis_title="Bid-to-Cover Ratio",
@@ -201,7 +200,6 @@ fig.update_layout(
     font_family = "Bloomberg",
 )
 
-# Show the plot
 fig.show()
 
 
@@ -210,7 +208,7 @@ df = df.reset_index(drop=True)
 df['auction_date'] = pd.to_datetime(df['auction_date'])
 df['bid_to_cover_ratio'] = pd.to_numeric(df['bid_to_cover_ratio'], errors='coerce')
 
-# Remove auctions that haven't happened yet (where 'bid_to_cover_ratio' is NaN)
+
 df = df.dropna(subset=['bid_to_cover_ratio'])
 
 # Get the last 5 auctions
@@ -296,7 +294,7 @@ for i, term in enumerate(last_5_terms):
         row=1, col=i+1
     )
 
-    # Add most recent auction as a vertical line (spanning the full height of the plot)
+    
     most_recent_auction = last_5_auctions_for_term.iloc[0]
     most_recent_bid_to_cover = most_recent_auction['bid_to_cover_ratio']
     fig.add_trace(
