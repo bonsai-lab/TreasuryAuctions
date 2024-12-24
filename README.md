@@ -6,7 +6,8 @@
 
 <img width="1419" alt="Screenshot 2024-12-24 at 13 32 49" src="https://github.com/user-attachments/assets/d71dec34-9acc-4645-8466-40067e8ec752" />
 
-<img width="1307" alt="Screenshot 2024-12-24 at 22 42 24" src="https://github.com/user-attachments/assets/1b75b8ff-f45a-4f04-8bb1-6090c7bbb5c0" />
+<img width="1308" alt="Screenshot 2024-12-24 at 22 49 09" src="https://github.com/user-attachments/assets/7a7cbb51-b1a9-4ea2-b28e-73723baa9a09" />
+
 
 
 
